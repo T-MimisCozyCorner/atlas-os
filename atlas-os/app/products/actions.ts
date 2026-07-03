@@ -16,10 +16,20 @@ export async function createProduct(formData: FormData) {
     status: String(formData.get("status")),
     price: String(formData.get("price")),
     next_step: String(formData.get("next_step")),
+    description: String(formData.get("description") || ""),
+    seo_title: String(formData.get("seo_title") || ""),
+    seo_description: String(formData.get("seo_description") || ""),
+    keywords: String(formData.get("keywords") || ""),
+    pinterest_titles: String(formData.get("pinterest_titles") || ""),
+    tiktok_script: String(formData.get("tiktok_script") || ""),
+    facebook_post: String(formData.get("facebook_post") || ""),
+    email_copy: String(formData.get("email_copy") || ""),
+    image_prompt: String(formData.get("image_prompt") || ""),
   });
 
   if (error) redirect(`/products/new?message=${encodeURIComponent(error.message)}`);
   revalidatePath("/products");
+  revalidatePath("/dashboard");
   redirect("/products");
 }
 
@@ -27,4 +37,5 @@ export async function deleteProduct(formData: FormData) {
   const supabase = createClient();
   await supabase.from("products").delete().eq("id", String(formData.get("id")));
   revalidatePath("/products");
+  revalidatePath("/dashboard");
 }

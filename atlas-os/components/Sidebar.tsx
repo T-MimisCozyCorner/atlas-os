@@ -5,6 +5,7 @@ const links = [
   ["🏠", "Dashboard", "/dashboard"],
   ["🏢", "Businesses", "/businesses"],
   ["💡", "Products", "/products"],
+  ["🏭", "AI Product Factory", "/product-factory"],
   ["✅", "Tasks", "/tasks"],
   ["🤖", "AI Employees", "/ai-employees"],
   ["📁", "Assets", "/assets"],
