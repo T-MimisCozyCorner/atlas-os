@@ -30,12 +30,14 @@ export function ProductFactoryForm() {
   const [productType, setProductType] = useState("");
   const [plan, setPlan] = useState<ProductPlan | null>(null);
   const [source, setSource] = useState("");
+  const [fallbackReason, setFallbackReason] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   async function handleGenerate() {
     setLoading(true);
     setError("");
+    setFallbackReason("");
     setPlan(null);
 
     try {
@@ -58,6 +60,7 @@ export function ProductFactoryForm() {
 
       setPlan(result.data);
       setSource(result.source);
+      setFallbackReason(result.error || "");
     } catch (err: any) {
       setError(err.message || "Something went wrong.");
     } finally {
@@ -96,7 +99,10 @@ export function ProductFactoryForm() {
 
         {source && (
           <div className="mt-4 rounded-xl border border-atlasTeal/30 bg-atlasTeal/10 p-3 text-sm text-slate-300">
-            Generation source: {source === "openai" ? "OpenAI API" : "Fallback generator"}
+            <p>Generation source: {source === "openai" ? "OpenAI API" : "Fallback generator"}</p>
+            {fallbackReason && (
+              <p className="mt-2 text-yellow-200">Fallback reason: {fallbackReason}</p>
+            )}
           </div>
         )}
       </section>
