@@ -34,9 +34,7 @@ export default async function ProductsPage() {
                 <td className="p-4">{product.price}</td>
                 <td className="p-4 text-slate-300">{product.next_step}</td>
                 <td className="p-4 text-sm text-slate-400">{product.description ? "Generated" : "Manual"}</td>
-                <td className="p-4">
-                  <form action={deleteProduct}><input type="hidden" name="id" value={product.id} /><button className="rounded-lg bg-red-500/15 px-3 py-2 text-sm text-red-200 hover:bg-red-500/25">Delete</button></form>
-                </td>
+                <td className="p-4"><form action={deleteProduct}><input type="hidden" name="id" value={product.id} /><button className="rounded-lg bg-red-500/15 px-3 py-2 text-sm text-red-200 hover:bg-red-500/25">Delete</button></form></td>
               </tr>
             ))}
             {!products?.length && <tr><td className="p-6 text-slate-400" colSpan={7}>No products yet. Click “AI Product Factory” to create your first AI-assisted product.</td></tr>}

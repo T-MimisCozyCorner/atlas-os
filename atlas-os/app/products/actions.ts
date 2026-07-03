@@ -21,10 +21,14 @@ export async function createProduct(formData: FormData) {
     seo_description: String(formData.get("seo_description") || ""),
     keywords: String(formData.get("keywords") || ""),
     pinterest_titles: String(formData.get("pinterest_titles") || ""),
+    pinterest_descriptions: String(formData.get("pinterest_descriptions") || ""),
     tiktok_script: String(formData.get("tiktok_script") || ""),
     facebook_post: String(formData.get("facebook_post") || ""),
+    instagram_caption: String(formData.get("instagram_caption") || ""),
     email_copy: String(formData.get("email_copy") || ""),
     image_prompt: String(formData.get("image_prompt") || ""),
+    pdf_outline: String(formData.get("pdf_outline") || ""),
+    launch_checklist: String(formData.get("launch_checklist") || ""),
   });
 
   if (error) redirect(`/products/new?message=${encodeURIComponent(error.message)}`);

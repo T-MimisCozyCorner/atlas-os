@@ -6,9 +6,9 @@ export default function ProductFactoryPage() {
   return (
     <Shell>
       <PageHeader
-        eyebrow="AI Product Factory"
-        title="Tell ATLAS what to build"
-        description="Type one idea and ATLAS will turn it into a product plan, listing copy, social content, keywords, and next steps."
+        eyebrow="ATLAS AI Engine"
+        title="AI Product Factory"
+        description="Describe a product once. ATLAS generates the product plan, content, SEO, and launch checklist."
       />
       <ProductFactoryForm />
     </Shell>

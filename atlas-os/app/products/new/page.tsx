@@ -26,7 +26,7 @@ export default function NewProductPage({ searchParams }: { searchParams: any }) 
           </div>
           <div>
             <label className="mb-2 block text-sm font-bold text-slate-300">Status</label>
-            <select className="input" name="status" defaultValue={searchParams.status || "Idea"}>
+            <select className="input" name="status" defaultValue={searchParams.status || "Draft"}>
               <option>Idea</option><option>Research</option><option>Draft</option><option>Design</option><option>Published</option>
             </select>
           </div>
@@ -42,10 +42,14 @@ export default function NewProductPage({ searchParams }: { searchParams: any }) 
         <TextArea name="seo_description" label="SEO Description" value={searchParams.seo_description} />
         <TextArea name="keywords" label="Keywords" value={searchParams.keywords} />
         <TextArea name="pinterest_titles" label="Pinterest Titles" value={searchParams.pinterest_titles} />
+        <TextArea name="pinterest_descriptions" label="Pinterest Descriptions" value={searchParams.pinterest_descriptions} />
         <TextArea name="tiktok_script" label="TikTok Script" value={searchParams.tiktok_script} />
         <TextArea name="facebook_post" label="Facebook Post" value={searchParams.facebook_post} />
+        <TextArea name="instagram_caption" label="Instagram Caption" value={searchParams.instagram_caption} />
         <TextArea name="email_copy" label="Email Copy" value={searchParams.email_copy} />
         <TextArea name="image_prompt" label="Image Prompt" value={searchParams.image_prompt} />
+        <TextArea name="pdf_outline" label="PDF Outline" value={searchParams.pdf_outline} />
+        <TextArea name="launch_checklist" label="Launch Checklist" value={searchParams.launch_checklist} />
 
         <button className="btn-primary" type="submit">Save Product</button>
       </form>
