@@ -23,11 +23,11 @@ type ProductPlan = {
   launch_checklist?: string;
 };
 
+const starterPrompt =
+  "Create a printable bundle for Housing Help Hub that helps Section 8 tenants prepare for annual recertification. Include checklists, phone scripts, document trackers, a 30-day timeline, Pinterest pins, TikTok script, Facebook post, Payhip listing copy, SEO keywords, and a launch checklist. Keep it under $20.";
+
 export function ProductFactoryForm() {
-  const [idea, setIdea] = useState("Section 8 Landlord Call Script Pack");
-  const [business, setBusiness] = useState("Auto-pick best fit");
-  const [audience, setAudience] = useState("");
-  const [productType, setProductType] = useState("");
+  const [request, setRequest] = useState(starterPrompt);
   const [plan, setPlan] = useState<ProductPlan | null>(null);
   const [source, setSource] = useState("");
   const [fallbackReason, setFallbackReason] = useState("");
@@ -45,10 +45,10 @@ export function ProductFactoryForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          idea,
-          business: business === "Auto-pick best fit" ? undefined : business,
-          audience,
-          productType,
+          idea: request,
+          business: undefined,
+          audience: undefined,
+          productType: undefined,
         }),
       });
 
@@ -69,78 +69,153 @@ export function ProductFactoryForm() {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_1.25fr]">
+    <div className="space-y-6">
       <section className="card">
-        <h3 className="text-2xl font-black">1. Give ATLAS one idea</h3>
-        <p className="mt-2 text-slate-400">ATLAS will generate the product plan, sales copy, SEO, content ideas, and launch checklist.</p>
+        <div className="mb-5 rounded-3xl border border-atlasPurple/30 bg-gradient-to-br from-atlasPink/10 via-atlasPurple/10 to-atlasTeal/10 p-6">
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-atlasTeal">
+            ATLAS AI Employee
+          </p>
+          <h3 className="mt-3 text-4xl font-black">
+            What would you like me to build today?
+          </h3>
+          <p className="mt-3 max-w-3xl text-slate-300">
+            Talk to ATLAS like an employee. Give one natural request and ATLAS will choose the business,
+            create the product, write marketing copy, build the PDF outline, and prepare the launch checklist.
+          </p>
+        </div>
 
-        <label className="mb-2 mt-5 block text-sm font-bold text-slate-300">Product idea</label>
-        <textarea className="input min-h-32" value={idea} onChange={(event) => setIdea(event.target.value)} />
+        <textarea
+          className="input min-h-48 text-base leading-7"
+          value={request}
+          onChange={(event) => setRequest(event.target.value)}
+          placeholder="Example: Create a digital product for Housing Help Hub that helps Section 8 tenants prepare for annual recertification..."
+        />
 
-        <label className="mb-2 mt-4 block text-sm font-bold text-slate-300">Business</label>
-        <select className="input" value={business} onChange={(event) => setBusiness(event.target.value)}>
-          <option>Auto-pick best fit</option>
-          <option>Housing Help Hub</option>
-          <option>Mimi's Cozy Corner</option>
-          <option>Mimi Finds Daily</option>
-        </select>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <button className="btn-primary" onClick={handleGenerate} disabled={loading}>
+            {loading ? "ATLAS is building..." : "Generate Product Workspace"}
+          </button>
 
-        <label className="mb-2 mt-4 block text-sm font-bold text-slate-300">Audience</label>
-        <input className="input" value={audience} onChange={(event) => setAudience(event.target.value)} placeholder="Example: Section 8 voucher holders" />
+          <button
+            className="rounded-xl bg-slate-800 px-4 py-2 font-bold text-white hover:bg-slate-700"
+            onClick={() => setRequest(starterPrompt)}
+            type="button"
+          >
+            Use starter prompt
+          </button>
+        </div>
 
-        <label className="mb-2 mt-4 block text-sm font-bold text-slate-300">Product type</label>
-        <input className="input" value={productType} onChange={(event) => setProductType(event.target.value)} placeholder="Example: checklist, planner, script pack, guide" />
+        {loading && (
+          <div className="mt-5 grid gap-3 md:grid-cols-4">
+            {["Choosing business", "Writing product", "Creating marketing", "Building checklist"].map((step) => (
+              <div key={step} className="rounded-2xl border border-slate-800 bg-slate-950 p-4 text-sm text-slate-300">
+                ✓ {step}
+              </div>
+            ))}
+          </div>
+        )}
 
-        <button className="btn-primary mt-5 w-full" onClick={handleGenerate} disabled={loading}>
-          {loading ? "Generating..." : "Generate With ATLAS AI"}
-        </button>
-
-        {error && <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-red-200">{error}</div>}
+        {error && (
+          <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-red-200">
+            {error}
+          </div>
+        )}
 
         {source && (
           <div className="mt-4 rounded-xl border border-atlasTeal/30 bg-atlasTeal/10 p-3 text-sm text-slate-300">
             <p>Generation source: {source === "openai" ? "OpenAI API" : "Fallback generator"}</p>
-            {fallbackReason && (
-              <p className="mt-2 text-yellow-200">Fallback reason: {fallbackReason}</p>
-            )}
+            {fallbackReason && <p className="mt-2 text-yellow-200">Fallback reason: {fallbackReason}</p>}
           </div>
         )}
       </section>
 
-      <section className="card">
-        <h3 className="text-2xl font-black">2. Review and save</h3>
-        {!plan && <p className="mt-4 text-slate-400">Generate a product plan to preview it here.</p>}
+      {!plan && (
+        <section className="card">
+          <h3 className="text-2xl font-black">Your product workspace will appear here</h3>
+          <p className="mt-2 text-slate-400">
+            Once ATLAS generates the draft, you’ll see editable sections for product details, sales copy,
+            Pinterest, TikTok, email, SEO, image prompts, PDF outline, and launch tasks.
+          </p>
+        </section>
+      )}
 
-        {plan && (
-          <form action="/products/new" method="GET" className="mt-5 space-y-4">
-            {Object.entries(plan).map(([key, value]) => (
-              <input key={key} type="hidden" name={key} value={String(value ?? "")} />
-            ))}
+      {plan && (
+        <section className="space-y-4">
+          <div className="card">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.3em] text-atlasTeal">
+                  Generated Workspace
+                </p>
+                <h3 className="mt-2 text-3xl font-black">{plan.name}</h3>
+                <p className="mt-2 text-slate-400">
+                  {plan.business} • {plan.price} • {plan.status}
+                </p>
+              </div>
 
-            <div className="grid gap-3">
-              <Preview label="Product Name" value={plan.name} />
-              <Preview label="Business" value={plan.business} />
-              <Preview label="Suggested Price" value={plan.price} />
-              <Preview label="Description" value={plan.description} large />
-              <Preview label="PDF Outline" value={plan.pdf_outline || ""} large />
-              <Preview label="Pinterest Titles" value={plan.pinterest_titles} large />
-              <Preview label="TikTok Script" value={plan.tiktok_script} large />
-              <Preview label="Launch Checklist" value={plan.launch_checklist || ""} large />
+              <form action="/products/new" method="GET">
+                {Object.entries(plan).map(([key, value]) => (
+                  <input key={key} type="hidden" name={key} value={String(value ?? "")} />
+                ))}
+                <button className="btn-primary" type="submit">
+                  Save to Product Manager
+                </button>
+              </form>
             </div>
+          </div>
 
-            <button className="btn-primary w-full" type="submit">Send to Save Form</button>
-          </form>
-        )}
-      </section>
+          <WorkspaceCard emoji="📦" title="Product" content={plan.description} />
+          <WorkspaceCard emoji="🔍" title="SEO" content={`${plan.seo_title}\n\n${plan.seo_description}\n\nKeywords:\n${plan.keywords}`} />
+          <WorkspaceCard emoji="📌" title="Pinterest" content={`${plan.pinterest_titles}\n\n${plan.pinterest_descriptions || ""}`} />
+          <WorkspaceCard emoji="🎬" title="TikTok" content={plan.tiktok_script} />
+          <WorkspaceCard emoji="📘" title="Facebook" content={plan.facebook_post} />
+          <WorkspaceCard emoji="📸" title="Instagram" content={plan.instagram_caption || ""} />
+          <WorkspaceCard emoji="📧" title="Email" content={plan.email_copy || ""} />
+          <WorkspaceCard emoji="🖼️" title="Image Prompt" content={plan.image_prompt} />
+          <WorkspaceCard emoji="📄" title="PDF Outline" content={plan.pdf_outline || ""} />
+          <WorkspaceCard emoji="🚀" title="Launch Checklist" content={plan.launch_checklist || ""} />
+        </section>
+      )}
     </div>
   );
 }
 
-function Preview({ label, value, large = false }: { label: string; value: string; large?: boolean }) {
+function WorkspaceCard({
+  emoji,
+  title,
+  content,
+}: {
+  emoji: string;
+  title: string;
+  content: string;
+}) {
+  const [text, setText] = useState(content);
+
+  async function copyText() {
+    await navigator.clipboard.writeText(text);
+  }
+
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-950 p-3">
-      <p className="mb-1 text-xs font-bold uppercase tracking-wide text-atlasTeal">{label}</p>
-      <p className={large ? "whitespace-pre-line text-sm text-slate-300" : "text-slate-200"}>{value}</p>
+    <div className="card">
+      <div className="mb-3 flex items-center justify-between gap-4">
+        <h4 className="text-xl font-black">
+          <span className="mr-2">{emoji}</span>
+          {title}
+        </h4>
+        <button
+          onClick={copyText}
+          type="button"
+          className="rounded-xl bg-slate-800 px-3 py-2 text-sm font-bold text-white hover:bg-slate-700"
+        >
+          Copy
+        </button>
+      </div>
+
+      <textarea
+        className="input min-h-40 whitespace-pre-line text-sm leading-6"
+        value={text}
+        onChange={(event) => setText(event.target.value)}
+      />
     </div>
   );
 }
