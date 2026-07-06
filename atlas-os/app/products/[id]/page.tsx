@@ -2,6 +2,7 @@ import { Shell } from "@/components/Shell";
 import { PageHeader } from "@/components/PageHeader";
 import { CopyButton } from "@/components/CopyButton";
 import { DownloadTextButton } from "@/components/DownloadTextButton";
+import { WorkspaceTabs } from "@/components/workspace/WorkspaceTabs";
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -92,13 +93,7 @@ ${product.launch_checklist || ""}`;
     <Shell>
       <PageHeader eyebrow="Product Workspace" title={product.name} description={`${product.business} • ${product.status} • ${product.price}`} />
 
-      <div className="mb-6 flex flex-wrap gap-2">
-        {["Overview", "Marketing", "Publishing", "Assets", "Downloads", "Launch"].map((tab) => (
-          <a key={tab} href={`#${tab.toLowerCase()}`} className="rounded-xl bg-slate-800 px-4 py-2 text-sm font-bold text-white hover:bg-slate-700">
-            {tab}
-          </a>
-        ))}
-      </div>
+      <WorkspaceTabs />
 
       {searchParams.message && <div className="mb-4 rounded-xl border border-atlasTeal/30 bg-atlasTeal/10 p-4 text-atlasTeal">{searchParams.message}</div>}
 
