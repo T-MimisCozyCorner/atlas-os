@@ -1,6 +1,7 @@
 import { Shell } from "@/components/Shell";
 import { PageHeader } from "@/components/PageHeader";
 import { CopyButton } from "@/components/CopyButton";
+import { DownloadTextButton } from "@/components/DownloadTextButton";
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -20,21 +21,10 @@ async function updateProductDescription(formData: FormData) {
   redirect(`/products/${id}?message=Product description saved`);
 }
 
-export default async function ProductDetailPage({
-  params,
-  searchParams,
-}: {
-  params: { id: string };
-  searchParams: { message?: string };
-}) {
+export default async function ProductDetailPage({ params, searchParams }: { params: { id: string }; searchParams: { message?: string } }) {
   const supabase = createClient();
 
-  const { data: product, error } = await supabase
-    .from("products")
-    .select("*")
-    .eq("id", params.id)
-    .single();
-
+  const { data: product, error } = await supabase.from("products").select("*").eq("id", params.id).single();
   if (error || !product) notFound();
 
   const payhipListing = `${product.name}
@@ -100,27 +90,44 @@ ${product.launch_checklist || ""}`;
 
   return (
     <Shell>
-      <PageHeader
-        eyebrow="Product Workspace"
-        title={product.name}
-        description={`${product.business} • ${product.status} • ${product.price}`}
-      />
+      <PageHeader eyebrow="Product Workspace" title={product.name} description={`${product.business} • ${product.status} • ${product.price}`} />
 
-      {searchParams.message && (
-        <div className="mb-4 rounded-xl border border-atlasTeal/30 bg-atlasTeal/10 p-4 text-atlasTeal">
-          {searchParams.message}
+      <div className="mb-6 flex flex-wrap gap-2">
+        {["Overview", "Marketing", "Publishing", "Assets", "Downloads", "Launch"].map((tab) => (
+          <a key={tab} href={`#${tab.toLowerCase()}`} className="rounded-xl bg-slate-800 px-4 py-2 text-sm font-bold text-white hover:bg-slate-700">
+            {tab}
+          </a>
+        ))}
+      </div>
+
+      {searchParams.message && <div className="mb-4 rounded-xl border border-atlasTeal/30 bg-atlasTeal/10 p-4 text-atlasTeal">{searchParams.message}</div>}
+
+      <section id="downloads" className="card mb-6">
+        <h3 className="text-2xl font-black">Downloads</h3>
+        <p className="mt-1 text-slate-400">Export this product package into files you can use outside ATLAS.</p>
+
+        <div className="mt-5 grid gap-4 md:grid-cols-4">
+          <DownloadCard title="📄 PDF" status="Coming soon" />
+          <DownloadCard title="📝 Markdown" status="Coming soon" />
+          <DownloadCard title="📋 TXT" status="Coming soon" />
+          <DownloadCard title="📦 Product Package" status="Coming soon" />
         </div>
-      )}
+      </section>
 
-      <div className="card mb-6 flex flex-wrap items-center justify-between gap-4">
+      <section id="publishing" className="card mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-2xl font-black">Publishing Tools</h3>
-          <p className="mt-1 text-slate-400">
-            Copy your launch assets into Payhip, Pinterest, TikTok, Facebook, Instagram, or email.
-          </p>
+          <p className="mt-1 text-slate-400">Copy your launch assets into Payhip, Pinterest, TikTok, Facebook, Instagram, or email.</p>
         </div>
-        <CopyButton text={copyEverything} label="Copy Everything" />
-      </div>
+        <div className="flex flex-wrap gap-2">
+          <CopyButton text={copyEverything} label="Copy Everything" />
+          <DownloadTextButton
+            filename={product.name}
+            text={copyEverything}
+            label="Download TXT"
+          />
+        </div>
+      </section>
 
       <div className="mb-6 grid gap-4 md:grid-cols-5">
         <PublishingCard title="📄 PDF" content={product.pdf_outline} />
@@ -130,18 +137,12 @@ ${product.launch_checklist || ""}`;
         <PublishingCard title="📧 Email" content={emailCampaign} />
       </div>
 
-      <div className="grid gap-4">
+      <section id="overview" className="grid gap-4">
         <form action={updateProductDescription} className="card">
           <input type="hidden" name="id" value={product.id} />
           <h3 className="mb-3 text-xl font-black">Product Description</h3>
-          <textarea
-            name="description"
-            className="input min-h-40 text-sm leading-6"
-            defaultValue={product.description || ""}
-          />
-          <button className="btn-primary mt-4" type="submit">
-            Save Description
-          </button>
+          <textarea name="description" className="input min-h-40 text-sm leading-6" defaultValue={product.description || ""} />
+          <button className="btn-primary mt-4" type="submit">Save Description</button>
         </form>
 
         <WorkspaceSection title="SEO Title" content={product.seo_title} />
@@ -156,8 +157,17 @@ ${product.launch_checklist || ""}`;
         <WorkspaceSection title="Image Prompt" content={product.image_prompt} />
         <WorkspaceSection title="PDF Outline" content={product.pdf_outline} />
         <WorkspaceSection title="Launch Checklist" content={product.launch_checklist} />
-      </div>
+      </section>
     </Shell>
+  );
+}
+
+function DownloadCard({ title, status }: { title: string; status: string }) {
+  return (
+    <div className="rounded-2xl border border-slate-800 bg-slate-950 p-4">
+      <h4 className="font-black">{title}</h4>
+      <p className="mt-2 text-sm text-slate-400">{status}</p>
+    </div>
   );
 }
 
@@ -175,19 +185,11 @@ function PublishingCard({ title, content }: { title: string; content?: string | 
   );
 }
 
-function WorkspaceSection({
-  title,
-  content,
-}: {
-  title: string;
-  content?: string | null;
-}) {
+function WorkspaceSection({ title, content }: { title: string; content?: string | null }) {
   return (
     <div className="card">
       <h3 className="mb-3 text-xl font-black">{title}</h3>
-      <p className="whitespace-pre-line text-slate-300">
-        {content || "Nothing saved yet."}
-      </p>
+      <p className="whitespace-pre-line text-slate-300">{content || "Nothing saved yet."}</p>
     </div>
   );
 }
