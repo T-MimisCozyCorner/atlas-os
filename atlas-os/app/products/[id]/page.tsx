@@ -1,6 +1,7 @@
 import { Shell } from "@/components/Shell";
 import { PageHeader } from "@/components/PageHeader";
 import { CopyButton } from "@/components/CopyButton";
+import { DownloadTextButton } from "@/components/DownloadTextButton";
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -118,7 +119,14 @@ ${product.launch_checklist || ""}`;
           <h3 className="text-2xl font-black">Publishing Tools</h3>
           <p className="mt-1 text-slate-400">Copy your launch assets into Payhip, Pinterest, TikTok, Facebook, Instagram, or email.</p>
         </div>
-        <CopyButton text={copyEverything} label="Copy Everything" />
+        <div className="flex flex-wrap gap-2">
+          <CopyButton text={copyEverything} label="Copy Everything" />
+          <DownloadTextButton
+            filename={product.name}
+            text={copyEverything}
+            label="Download TXT"
+          />
+        </div>
       </section>
 
       <div className="mb-6 grid gap-4 md:grid-cols-5">
