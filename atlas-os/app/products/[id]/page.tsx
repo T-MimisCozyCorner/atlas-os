@@ -8,6 +8,7 @@ import { CollapsibleCard } from "@/components/workspace/CollapsibleCard";
 import { SEOSection } from "@/components/workspace/SEOSection";
 import { SocialSection } from "@/components/workspace/SocialSection";
 import { AssetsSection } from "@/components/workspace/AssetsSection";
+import { LaunchSection } from "@/components/workspace/LaunchSection";
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -168,7 +169,7 @@ ${product.launch_checklist || ""}`;
           imagePrompt={product.image_prompt}
           pdfOutline={product.pdf_outline}
         />
-        <WorkspaceSection title="Launch Checklist" content={product.launch_checklist} />
+        <LaunchSection launchChecklist={product.launch_checklist} />
       </section>
     </Shell>
   );
