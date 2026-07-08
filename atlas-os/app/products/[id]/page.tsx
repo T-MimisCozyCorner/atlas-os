@@ -9,6 +9,7 @@ import { SEOSection } from "@/components/workspace/SEOSection";
 import { SocialSection } from "@/components/workspace/SocialSection";
 import { AssetsSection } from "@/components/workspace/AssetsSection";
 import { LaunchSection } from "@/components/workspace/LaunchSection";
+import { ProductDescription } from "@/components/workspace/ProductDescription";
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -143,14 +144,12 @@ ${product.launch_checklist || ""}`;
         <PublishingCard title="🎬 TikTok" content={product.tiktok_script} />
         <PublishingCard title="📧 Email" content={emailCampaign} />
       </div>
-
-      <section id="overview" className="grid gap-4">
-        <form action={updateProductDescription} className="card">
-          <input type="hidden" name="id" value={product.id} />
-          <h3 className="mb-3 text-xl font-black">Product Description</h3>
-          <textarea name="description" className="input min-h-40 text-sm leading-6" defaultValue={product.description || ""} />
-          <button className="btn-primary mt-4" type="submit">Save Description</button>
-        </form>
+<section id="overview" className="grid gap-4">
+     <ProductDescription
+  productId={product.id}
+  description={product.description}
+  action={updateProductDescription}
+/>
 
         <SEOSection
           seoTitle={product.seo_title}
