@@ -4,7 +4,8 @@ import { CopyButton } from "@/components/CopyButton";
 import { DownloadTextButton } from "@/components/DownloadTextButton";
 import { WorkspaceTabs } from "@/components/workspace/WorkspaceTabs";
 import { ActionBar } from "@/components/workspace/ActionBar";
-import { CollapsibleCard } from "@/components/workspace/CollapsibleCard";
+
+import { DownloadsPanel } from "@/components/workspace/DownloadsPanel";
 import { SEOSection } from "@/components/workspace/SEOSection";
 import { SocialSection } from "@/components/workspace/SocialSection";
 import { AssetsSection } from "@/components/workspace/AssetsSection";
@@ -110,17 +111,7 @@ ${product.launch_checklist || ""}`;
 
       {searchParams.message && <div className="mb-4 rounded-xl border border-atlasTeal/30 bg-atlasTeal/10 p-4 text-atlasTeal">{searchParams.message}</div>}
 
-      <section id="downloads" className="card mb-6">
-        <h3 className="text-2xl font-black">Downloads</h3>
-        <p className="mt-1 text-slate-400">Export this product package into files you can use outside ATLAS.</p>
-
-        <div className="mt-5 grid gap-4 md:grid-cols-4">
-          <DownloadCard title="📄 PDF" status="Coming soon" />
-          <DownloadCard title="📝 Markdown" status="Coming soon" />
-          <DownloadCard title="📋 TXT" status="Coming soon" />
-          <DownloadCard title="📦 Product Package" status="Coming soon" />
-        </div>
-      </section>
+     <DownloadsPanel />
 
       <section id="publishing" className="card mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
@@ -174,14 +165,7 @@ ${product.launch_checklist || ""}`;
   );
 }
 
-function DownloadCard({ title, status }: { title: string; status: string }) {
-  return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-950 p-4">
-      <h4 className="font-black">{title}</h4>
-      <p className="mt-2 text-sm text-slate-400">{status}</p>
-    </div>
-  );
-}
+
 
 function PublishingCard({ title, content }: { title: string; content?: string | null }) {
   const safeContent = content || "Nothing saved yet.";
@@ -197,10 +181,4 @@ function PublishingCard({ title, content }: { title: string; content?: string | 
   );
 }
 
-function WorkspaceSection({ title, content }: { title: string; content?: string | null }) {
-  return (
-    <CollapsibleCard title={title}>
-      <p className="whitespace-pre-line text-slate-300">{content || "Nothing saved yet."}</p>
-    </CollapsibleCard>
-  );
-}
+
